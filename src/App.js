@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import AddItem from "./pages/AddItem";
 import ListItems from "./pages/ListItems";
 import AdminPanel from "./pages/Admin";
+import Leaderboard from "./pages/LeaderBoard";
 //import './App.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/addItem" element={<AddItem />} />
         <Route path="/items" element={<ListItems />} />
         <Route path="/admin" element={<AdminPanel />} />
+       
 
       </Routes>
     </Router>

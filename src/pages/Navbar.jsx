@@ -23,6 +23,7 @@ export default function Navbar() {
         <div className="d-flex align-items-center">
           <Link className="nav-link text-light me-3" to="/">Home</Link>
           <Link className="nav-link text-light me-3" to="/items">Bid on Items</Link>
+
           {currentUser && (
             <>
               <Link className="nav-link text-light me-3" to="/addItem">Add Item</Link>

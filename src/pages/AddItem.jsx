@@ -19,7 +19,7 @@ export default function AddItem() {
         currentBid: 0,
         currentWinner: "",
         isOpen: true,
-        addedBy: auth.currentUser.email  // <--- add this
+        addedBy: auth.currentUser.email 
       });
 
       alert("Item added!");
