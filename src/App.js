@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import AddItem from "./pages/AddItem";
 import ListItems from "./pages/ListItems";
 import AdminPanel from "./pages/Admin";
+//import './App.css';
 
 function App() {
   return (

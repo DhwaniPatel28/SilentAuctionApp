@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { db, auth } from "../firebase";
 import { collection, updateDoc, doc, onSnapshot } from "firebase/firestore";
+import Navbar from "./Navbar";
 
 export default function ListItems() {
   const [items, setItems] = useState([]);
-  const [bidAmounts, setBidAmounts] = useState({}); // track bid input per item
+  const [bidAmounts, setBidAmounts] = useState({});
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "items"), (snapshot) => {
@@ -15,7 +16,6 @@ export default function ListItems() {
     return () => unsubscribe();
   }, []);
 
-  // Handle bid placement
   const handleBid = async (item) => {
     const bidAmount = Number(bidAmounts[item.id]);
     if (!auth.currentUser) {
@@ -34,7 +34,6 @@ export default function ListItems() {
         currentBid: bidAmount,
         currentWinner: auth.currentUser.email
       });
-      // Clear input
       setBidAmounts(prev => ({ ...prev, [item.id]: "" }));
     } catch (err) {
       alert(err.message);
@@ -42,32 +41,46 @@ export default function ListItems() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>All Auction Items</h2>
-      {items.map(item => (
-        <div key={item.id} style={{ border: "1px solid gray", padding: "10px", margin: "10px 0" }}>
-          <h3>{item.title}</h3>
-          <p>{item.description}</p>
-          {item.image && <img src={item.image} alt={item.title} width="150" />}
-          <p><strong>Current Bid:</strong> ${item.currentBid}</p>
-          <p><strong>Top Bidder:</strong> {item.currentWinner || "No bids yet"}</p>
+    <>
+    <Navbar></Navbar>
+    <div className="container mt-5">
+      <h2 className="mb-4 text-center text-primary fw-bold">Silent Auction</h2>
+      <div className="row">
+        {items.map(item => (
+          <div key={item.id} className="col-md-6 mb-4">
+            <div className="card shadow-sm h-100 border-primary">
+              {item.image && <img src={item.image} className="card-img-top" alt={item.title} />}
+              <div className="card-body d-flex flex-column">
+                <h5 className="card-title text-success">{item.title}</h5>
+                <p className="card-text">{item.description}</p>
+                <p><strong>Current Bid:</strong> <span className="text-warning">${item.currentBid}</span></p>
+                <p><strong>Top Bidder:</strong> <span className="text-info">{item.currentWinner || "No bids yet"}</span></p>
 
-          {item.isOpen && (
-            <div>
-              <input
-                type="number"
-                placeholder="Your bid"
-                value={bidAmounts[item.id] || ""}
-                onChange={(e) =>
-                  setBidAmounts(prev => ({ ...prev, [item.id]: e.target.value }))
-                }
-              />
-              <button onClick={() => handleBid(item)}>Place Bid</button>
+                {item.isOpen ? (
+                  <div className="d-flex mt-auto">
+                    <input
+                      type="number"
+                      placeholder="Your bid"
+                      value={bidAmounts[item.id] || ""}
+                      onChange={(e) =>
+                        setBidAmounts(prev => ({ ...prev, [item.id]: e.target.value }))
+                      }
+                      className="form-control me-2 border-success"
+                      style={{ width: "100px" }}
+                    />
+                    <button onClick={() => handleBid(item)} className="btn btn-success">
+                      Place Bid
+                    </button>
+                  </div>
+                ) : (
+                  <p className="text-danger fw-bold mt-2">Auction Closed</p>
+                )}
+              </div>
             </div>
-          )}
-          {!item.isOpen && <p style={{ color: "red" }}>Auction Closed</p>}
-        </div>
-      ))}
+          </div>
+        ))}
+      </div>
     </div>
+    </>
   );
 }
